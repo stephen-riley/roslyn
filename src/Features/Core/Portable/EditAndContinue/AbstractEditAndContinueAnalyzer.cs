@@ -508,9 +508,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             }
             catch (Exception e) when (ReportFatalErrorAnalyzeDocumentAsync(baseActiveStatements, e))
             {
-                // The same behavior as if there was a syntax error - we are unable to analyze the document. 
-                return DocumentAnalysisResults.SyntaxErrors(ImmutableArray.Create(
-                    new RudeEditDiagnostic(RudeEditKind.InternalError, span: default, arguments: new[] { document.FilePath, e.ToString() })));
+                throw ExceptionUtilities.Unreachable;
             }
         }
 
@@ -525,7 +523,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 s_fatalErrorBaseActiveStatements = baseActiveStatements.ToArray();
             }
 
-            return FatalError.ReportWithoutCrashUnlessCanceled(e);
+            return FatalError.ReportUnlessCanceled(e);
         }
 
         internal Dictionary<SyntaxNode, EditKind> BuildEditMap(EditScript<SyntaxNode> editScript)
